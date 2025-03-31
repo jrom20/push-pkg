@@ -6,7 +6,7 @@ jobs:
   build-and-publish-nuget:
     env:
       MYGET_API_KEY: ${{ secrets.MYGET_API_KEY }}
-    runs-on: k8s-small
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
