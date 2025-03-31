@@ -1,0 +1,20 @@
+name: "Push Packages to MyGet"
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-publish-nuget:
+    env:
+      MYGET_API_KEY: ${{ secrets.MYGET_API_KEY }}
+    runs-on: k8s-small
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore, Build, Pack, and Push Contracts
+        shell: bash
+        run: |
+          dotnet restore ./src/Jrom20.Contracts/Jrom20.Contracts.csproj
+          dotnet build ./src/Jrom20.Contracts/Jrom20.Contracts.csproj --configuration Release --no-restore
+          dotnet pack ./src/Jrom20.Contracts/Jrom20.Contracts.csproj --no-build
+          dotnet nuget push ./src/Jrom20.Contracts/bin/Release/*.nupkg --api-key $MYGET_API_KEY --source https://www.myget.org/F/jrom20/api/v2/package
